@@ -7,40 +7,18 @@
 import numpy as np
 import pandas as pd
 import math
+from sklearn import preprocessing,cross_validation
 import os
 
-#data
-data=pd.read_csv("data/data.csv",sep=";")
+df=pd.read_csv('data/data.csv',sep=";")
 
-n_train=round(len(data)*0.70)
+X=np.array(df.drop(['left'],1))
+X=preprocessing.normalize(X)
+y=np.array(df['left'])
 
-train=data[0:n_train]
-test=data[n_train+1:len(data)]
+X_train,X_test,y_train,y_test=cross_validation.train_test_split(X,y,test_size=0.2)
 
-print(train.shape,test.shape)
-
-#normalize features
-
-train.iloc[:,0:7]=(train.iloc[:,0:7]-train.iloc[:,0:7].mean())/(train.iloc[:,0:7].max()-train.iloc[:,0:7].min())
-test.iloc[:,0:7]=(test.iloc[:,0:7]-test.iloc[:,0:7].mean())/(test.iloc[:,0:7].max()-test.iloc[:,0:7].min())
-print(train)
-#2 groups of employee, those who left the company and those who stayed
-
-print(train.shape,test.shape)
-print(list(train))
-
-group1=train[train.left==1]
-group2=train[train.left==0]
-
-print("group1 dimensions:",group1.shape,"group2 dimensions:",group2.shape)
-
-# group1=train.loc[]
-# group2=train
-
-X_train=train.iloc[:,0:7]
-Y_train=train.iloc[:,-1]
-X_test=train.iloc[:,0:7]
-Y_test=train.iloc[:,-1]
+new_individual=np.array([0.10,0.1,10,150,7,0,0])
 
 #examples
 ind1=np.array([3,3])
@@ -54,22 +32,23 @@ def distance(ind1,ind2):
 	distance=np.sum((ind1-ind2)**2)
 	return distance
 
-def kdistance(k,new_example,labelled_data):
+def kdistance(new_example,labelled_data):
 	dist=[]
-	for i in list(range(0,k+1)):
+	for i in list(range(0,len(labelled_data))):
 		print(i)
 		dist.append(distance(new_example,labelled_data[i]))
-		print(dist)
 	return dist
-
 
 def knn(kdistance_table):
 	enum=np.argmin(kdistance_table)
-	prediction=labelled_data[enum]
+	prediction=X_train[enum]
 	print("The new individual is close to ",prediction)
 
+def vote():
+	pass
+
 #Calcul of distances
-kdistance_table=kdistance(1,new_example,labelled_data)
+kdistance_table=kdistance(new_individual,X_train)
 
 #Knn
 knn(kdistance_table)
