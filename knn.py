@@ -10,14 +10,15 @@ import math
 import matplotlib.pyplot as plt
 from sklearn import preprocessing,model_selection
 from collections import Counter
+import seaborn as sns
 import scipy
 import os
 
 df=pd.read_csv('data/data.csv',sep=";")
-print(df)
 X=np.array(df.drop(['left'],1))
 X_normed=preprocessing.normalize(X)
 y=np.array(df['left'])
+print(X_normed)
 
 X_train,X_test,y_train,y_test=model_selection.train_test_split(X_normed,y,test_size=0.2)
 
@@ -73,27 +74,40 @@ def accuracy(X_test,y_test,X_train):
 #data analysis
 analysis=True
 if analysis==True:
-	stats=scipy.stats.describe(X)
-	print(stats.nobs)
-	print(stats.minmax)
-	print(stats.mean)
-	print(stats.variance)
-	print(stats.skewness)
-	time_spend_hist=plt.hist(df['time_spend_company'])
-	plt.title('time_spend_company')
+	#describe each feature statistically
+	print(df.describe())
+	#list columns names
+	print(list(df))
+	#check for missing value
+	print(df.isnull().any())
+	#plot box plot for each feature
+	i=1
+	for column in list(df):
+		df.boxplot(column=column)
+		i=i+1
+		plt.tight_layout()
 	plt.show()
-	montly_hours_hist=plt.hist(df['average_montly_hours'])
-	plt.title('average_montly_hours')
-	plt.show()
-	number_project_hist=plt.hist(df['number_project'])
-	plt.title('number_project')
-	plt.show()
-	number_project_hist=plt.hist(df['promotion_last_5years'])
-	plt.title('promotion_last_5years')
-	plt.show()
-	number_project_hist=plt.hist(df['left'])
-	plt.title('skewness of the data')
-	plt.show()
+
+	#find correlations between values
+	corr=df.corr()
+	print(corr)
+	sns.heatmap(corr,xticklabels=corr.columns.values,yticklabels=corr.columns.values)
+
+	# time_spend_hist=plt.hist(df['time_spend_company'])
+	# plt.title('time_spend_company')
+	# plt.show()
+	# montly_hours_hist=plt.hist(df['average_montly_hours'])
+	# plt.title('average_montly_hours')
+	# plt.show()
+	# number_project_hist=plt.hist(df['number_project'])
+	# plt.title('number_project')
+	# plt.show()
+	# number_project_hist=plt.hist(df['promotion_last_5years'])
+	# plt.title('promotion_last_5years')
+	# plt.show()
+	# number_project_hist=plt.hist(df['left'])
+	# plt.title('skewness of the data')
+	# plt.show()
 
 
 

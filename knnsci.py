@@ -1,10 +1,10 @@
 import numpy as np
 from sklearn import preprocessing,model_selection,neighbors
-from sklearn.manifold import TSNE
+# from sklearn.manifold import TSNE
 import pandas as pd
 from ggplot import *
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+# from mpl_toolkits.mplot3d import Axes3D
 
 df=pd.read_csv('data/data.csv',sep=";")
 
@@ -14,11 +14,10 @@ y=np.array(df['left'])
 
 X_train,X_test,y_train,y_test=model_selection.train_test_split(X,y,test_size=0.2)
 
-clf=neighbors.KNeighborsClassifier() #k default value is 5
+clf=neighbors.KNeighborsClassifier(n_neighbors=100) #k default value is 5
 clf.fit(X_train,y_train)
-
 accuracy=clf.score(X_test,y_test)
-print(accuracy)
+print("accuracy of algorithm is",accuracy)
 
 
 
